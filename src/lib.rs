@@ -22,8 +22,6 @@
 #[cfg(test)]
 #[macro_use] extern crate std;
 
-// TODO: seperate input/outputs/both from each other via traits?
-
 #[derive(Copy, Clone)]
 pub enum Error {
     /// The GPIO was configured as an input but an output action was attempted
@@ -47,7 +45,6 @@ pub enum Direction {
 
 /// The logic level of a GPIO Pin
 #[derive(Copy, Clone, PartialEq)]
-#[repr(u8)]
 pub enum Level {
     /// Logic low
     Low,
@@ -58,13 +55,13 @@ pub enum Level {
 /// Generic trait providing access to a single GPIO
 pub trait Gpio {
     /// Get the currently configured direciton of this GPIO
-    fn get_direction(&mut self) -> Result<Direction>;
+    fn get_direction(&self) -> Result<Direction>;
     /// Set the pin to be an input
     fn set_input(&mut self) -> Result<()>;
     /// Set the pin to be an output with the provided level
     fn set_output(&mut self, value: Level) -> Result<()>;
     /// Get the current level of this GPIO (input only)
-    fn get_level(&mut self) -> Result<Level>;
+    fn get_level(&self) -> Result<Level>;
     /// Set the current level of this GPIO (output only)
     fn set_level(&mut self, value: Level) -> Result<()>;
 }
