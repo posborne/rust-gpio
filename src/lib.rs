@@ -16,12 +16,15 @@
 #![crate_type = "lib"]
 #![crate_name = "gpio"]
 
-#![feature(no_std)]
-#![no_std]
+// until core is stabilized, we need some hacks to support
+// both nightly and stable
+#![cfg_attr(nightly, feature(no_std))]
+#![cfg_attr(nightly, no_std)]
 
-#[cfg(test)]
-#[macro_use] extern crate std;
+#[cfg(any(not(nightly), test))]
+#[macro_use] extern crate std as core;
 
+/// Indication that an error occurred with a GPIO operation
 #[derive(Copy, Clone)]
 pub enum Error {
     /// The GPIO was configured as an input but an output action was attempted
@@ -32,6 +35,7 @@ pub enum Error {
     Other(&'static str),
 }
 
+/// GPIO Result
 pub type Result<T> = core::result::Result<T, Error>;
 
 /// The direction of a GPIO Pin
